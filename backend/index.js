@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 const mongoose = require("mongoose");
-const Candidate = require("./models/Candidate");
+const Candidate = require("./models/Candidate_TEMP");
 
 mongoose
   .connect(
