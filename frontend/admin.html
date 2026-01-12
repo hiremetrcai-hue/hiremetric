@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+</head>
+<body>
+ <!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background: #f4f4f4;
+    }
+    .pass {
+      color: green;
+      font-weight: bold;
+    }
+    .fail {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>🛠 Admin Dashboard</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Score</th>
+        <th>Percentage</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="candidateTable">
+      <tr>
+        <td colspan="5">Loading candidates...</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    fetch("http://localhost:5000/admin/candidates")
+      .then(res => res.json())
+      .then(data => {
+        const table = document.getElementById("candidateTable");
+        table.innerHTML = "";
+
+        data.forEach(c => {
+          const row = `
+            <tr>
+              <td>${c.name}</td>
+              <td>${c.email}</td>
+              <td>${c.score}</td>
+              <td>${c.percentage}%</td>
+              <td class="${c.eligible ? 'pass' : 'fail'}">
+                ${c.eligible ? "Eligible" : "Not Eligible"}
+              </td>
+            </tr>
+          `;
+          table.innerHTML += row;
+        });
+      })
+      .catch(err => {
+        document.getElementById("candidateTable").innerHTML =
+          "<tr><td colspan='5'>Failed to load candidates</td></tr>";
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
+

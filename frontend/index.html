@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Engineer – Fresher Interview</title>
+  <style>
+    body { font-family: Arial; max-width: 700px; margin: auto; }
+    input { width: 100%; margin-bottom: 10px; }
+    .timer { color: red; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<h2>AI Engineer – Fresher Interview</h2>
+<p class="timer">Time left: <span id="time">300</span> seconds</p>
+
+<input id="name" placeholder="Your Name" />
+<input id="email" placeholder="Your Email" />
+
+<div id="questions"></div>
+
+<button onclick="submitInterview()">Submit Interview</button>
+<h3 id="result"></h3>
+
+<script>
+let questions = [];
+let timeLeft = 300;
+
+fetch("http://localhost:5000/questions")
+  .then(r => r.json())
+  .then(data => {
+    questions = data;
+    const qDiv = document.getElementById("questions");
+   data.forEach((q, i) => {
+  qDiv.innerHTML += `
+    <p>${q.id}. ${q.question}</p>
+    <input type="text" id="ans${i}" />
+  `;
+});
+  });
+
+// Timer
+setInterval(() => {
+  if (timeLeft > 0) {
+    document.getElementById("time").innerText = timeLeft;
+    timeLeft--;
+  } else {
+    submitInterview();
+  }
+}, 1000);
+
+
+
+function submitInterview() {
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+
+  let answers = [];
+  questions.forEach((q, i) => {
+    const input = document.getElementById("ans" + i);
+    answers.push(input ? input.value : "");
+  });
+
+  fetch("http://localhost:5000/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name, email, answers })
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("result").innerHTML = `
+      <b>${data.result}</b><br>
+      Score: ${data.score}/${data.totalQuestions}<br>
+      Percentage: ${data.percentage}%
+    `;
+  })
+  .catch(err => {
+    alert("Submission failed");
+    console.error(err);
+  });
+}
+
+</script>
+
+</body>
+</html>
