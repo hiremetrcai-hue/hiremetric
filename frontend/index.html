@@ -25,7 +25,7 @@
 let questions = [];
 let timeLeft = 300;
 
-fetch("http://localhost:5000/questions")
+fetch("https://hiremetric--hiremetrcai.replit.app/questions")
   .then(r => r.json())
   .then(data => {
     questions = data;
@@ -60,7 +60,7 @@ function submitInterview() {
     answers.push(input ? input.value : "");
   });
 
-  fetch("http://localhost:5000/submit", {
+  fetch("https://hiremetric--hiremetrcai.replit.app/submit", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
